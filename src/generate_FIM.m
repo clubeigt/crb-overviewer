@@ -13,7 +13,7 @@ function FIM = generate_FIM(code, fs, fc, epsilon)
 %   rho the signal amplitude (real-valued) and phi its phase. signal 0 
 %   could be a direct signal and signal 1 its reflected replica.
 %
-%        INPUTS: code       [] 1xnSamp vector containing the code used
+%        INPUTS: code       [] Nx1 vector containing the considered code
 %                fs         [] reduced sampling frequency
 %                fc         [] reduced carrier frequency 
 %                epsilon    [] 8x1 vector of parameters 
@@ -24,8 +24,10 @@ function FIM = generate_FIM(code, fs, fc, epsilon)
 %
 %    REFERENCES: [1] 2019 [Das et al] On the Accuracy Limit of Time-delay 
 %                    Estimation with a Band-limited Signal
+%                    DOI: 10.1109/ICASSP.2019.8682948
 %                [2] 2020 [Lubeigt et al] Joint Delay-Doppler Estimation 
 %                    Performance in a Dual Source Context
+%                    DOI:10.3390/rs12233894
 %--------------------------------------------------------------------------
 
 %% I - Initialisation
@@ -42,9 +44,9 @@ b_1     = epsilon(6);
 alpha_1 = epsilon(7);
 phi_1   = epsilon(8);
 
-Delta_tau   = (tau_1 - tau_0)/fs; %[chips]
+Delta_tau   = (tau_1 - tau_0)/fs; % [chips]
 Delta_b     = b_1 - b_0;
-Delta_phi   = phi_1 - phi_0;      %[rad]
+Delta_phi   = phi_1 - phi_0;      % [rad]
 
 %% II - Evaluation of Matrices W, W_Delta and Q
 
@@ -80,6 +82,7 @@ Q(length(Q_0(:,1))+1:end,length(Q_0(1,:))+1:end) = Q_1;
 
 FIM = Q*DD*Q';
 
-% Note: here one still needs to take the real part and multiply by 2*fs/sigma^2 (see [2])
+% Note: here one still needs to take the real part and multiply by 
+% 2*fs/sigma^2 (see [2]).
 
 end % function generate_FIM

@@ -1,76 +1,78 @@
-function W_Delta = generate_W_Delta(code, Fs, Fc, Delta_tau, Delta_b)
+function W_Delta = generate_W_Delta(code, fs, fc, Delta_tau, Delta_b)
 %--------------------------------------------------------------------------
-%         USAGE: generate_W_Delta(code, Fs, Fc, Delta_tau, Delta_b)
-%
 %        AUTHOR: Corentin Lubeigt
 %       CREATED: 05/11/2020
 %   
 %   DESCRIPTION: This function generates the interference matrix W_Delta
 %   that is involved in the Fisher Information Matrix of the collection
-%   with one antenna of a signal and a single reflection in a Gaussian
-%   case and under band-limited assumption.
+%   with one antenna of a signal and a single reflection in an additive 
+%   white Gaussian case and under band-limited assumption.
 %   
 %         NOTE: From this general function, it is easy to get the W matrix
-%         which corresponds to the case with a unique signal [1]. The W matrix
-%         is also used to compute the Fisher Information matrix. To obtain
-%         the W matrix from this function, just set Delta_tau and Delta_b
-%         to 0.
+%   which corresponds to the case with a unique signal [1]. The W matrix is
+%   also used to compute the Fisher Information matrix. To obtain the W 
+%   matrix from this function, just set Delta_tau and Delta_b to 0.
 %
-%        INPUTS: code       []   1xnSamp vector containing the code used
-%                Fs         [Hz] sampling frequency (can be a reduced frequency)
-%                Fc         [Hz] carrier frequency (can be a reduced frequency)
-%                Delta_tau  [s]  time delay difference between path 0 and
-%                                path 1 (can be a reduced time (in terms of
-%                                C/A chips for instance))
-%                Delta_b    []   doppler drift difference between path 0
-%                                and path 1
+%        INPUTS: code       [] Nx1 vector containing the code used
+%                fs         [] reduced sampling frequency
+%                fc         [] reduced carrier frequency
+%                Delta_tau  [] reduced time delay difference between path 0 and
+%                              path 1
+%                Delta_b    [] Doppler dilatation difference between path 0
+%                              and path 1
 %
-%       OUTPUTS: W_Delta    []   a 3x3 matrix that characterises the
-%                                interference between a signal and itself 
+%       OUTPUTS: W_Delta    [] a 3x3 matrix that characterises the
+%                              interference between a signal and a
+%                              time-delay, frequency shifted replica of it
 %
-%    REFERENCES: [1] 2020 [Medina et al] Compact CRB for delay, Doppler, and phase estimation - application to GNSS SPP and RTK performance characterisation
-%                [2] 2020 [Lubeigt et al] Joint Delay-Doppler Estimation Performance in a Dual Source Context
+%    REFERENCES: [1] 2020 [Medina et al] Compact CRB for delay, Doppler, 
+%                    and phase estimation - application to GNSS SPP and RTK
+%                    performance characterisation
+%                    DOI: 10.1049/iet-rsn.2020.0168
+%                [2] 2020 [Lubeigt et al] Joint Delay-Doppler Estimation 
+%                    Performance in a Dual Source Context
+%                    DOI:10.3390/rs12233894
 %--------------------------------------------------------------------------
 
 %% I - Initialisation
 
-nSamp = length(code);
-wc = 2*pi*Fc;
-Ts = 1/Fs;
+N = length(code);
+wc = 2*pi*fc;
+Ts = 1/fs;
 
 %% II - Priori calculations
 
-% 1) Vectors involved in the W_Delta components
+% 1- Vectors involved in the W_Delta components
 
-% 1a- time vector
-dt = -(1-nSamp:nSamp-1) + Delta_tau/Ts;
+% time vector
+dt = -(1-N:N-1) + Delta_tau/Ts;
 
-% 1b- 0 derivative
+% 0 derivative
 v0 = sinc(dt);
 
-% 1c- first derivative
+% first derivative
 v1 = (cos(pi*dt) - v0);
 v1(not(not(dt))) = v1(not(not(dt)))./dt(not(not(dt)));
 
-% 1d- second derivative
+% second derivative
 v2 = 2*v1;
 v2(not(not(dt))) = v2(not(not(dt)))./dt(not(not(dt)));
 v2 = (pi^2)*v0 + v2;
 v2(not(dt)) = pi^2/3;
 
-% 2) series of matrices used to compute the W_Delta components
+% 2- series of matrices used to compute the W_Delta components
 
-% 2a- Matrix D (due to first derivatives)
-diagD = 1:nSamp;
+% Matrix D (due to first derivatives)
+diagD = 1:N;
 
-% 2b- Matrix U (due to different doppler between signals)
+% Matrix U (due to different Doppler between signals)
 if (Delta_b ~= 0)
-    diagU = exp(-1j*2*pi*Ts*Fc*Delta_b*(1:nSamp));
+    diagU = exp(-1j*2*pi*Ts*fc*Delta_b*(1:N));
 else
-    diagU = ones(1,nSamp);
+    diagU = ones(1,N);
 end
 
-% 3) Intermediate combination of vectors and matrices to avoid huge
+% 3- Intermediate combination of vectors and matrices to avoid huge
 % matrices handling
 
 WD_cD    = code'.*diagD;
@@ -100,15 +102,15 @@ WD_VD2c = WD_VD2c(1:length(code));
 
 %% III - Evaluation of each components of W_Delta
 
-WD11 = (1/Fs)*(WD_cU*WD_VD0c);
-WD12 = (1/Fs^2)*(WD_cDU*WD_VD0c);
-WD13 = -(WD_cU*WD_VD1c) + (1j*wc*Delta_b/Fs)*(WD_cU*WD_VD0c);
-WD21 = (1/Fs^2)*(WD_cU*WD_VD0Dc);
-WD22 = (1/Fs^3)*(WD_cDU*WD_VD0Dc);
-WD23 = -(1/Fs)*(WD_cU*WD_VD1Dc) + (1j*wc*Delta_b/Fs^2)*(WD_cU*WD_VD0Dc);
+WD11 = (1/fs)*(WD_cU*WD_VD0c);
+WD12 = (1/fs^2)*(WD_cDU*WD_VD0c);
+WD13 = -(WD_cU*WD_VD1c) + (1j*wc*Delta_b/fs)*(WD_cU*WD_VD0c);
+WD21 = (1/fs^2)*(WD_cU*WD_VD0Dc);
+WD22 = (1/fs^3)*(WD_cDU*WD_VD0Dc);
+WD23 = -(1/fs)*(WD_cU*WD_VD1Dc) + (1j*wc*Delta_b/fs^2)*(WD_cU*WD_VD0Dc);
 WD31 = WD_cU*WD_VD1c;
-WD32 = (1/Fs)*(WD_cDU*WD_VD1c);
-WD33 = Fs*(WD_cU*WD_VD2c) + 1j*wc*Delta_b*(WD_cU*WD_VD1c);
+WD32 = (1/fs)*(WD_cDU*WD_VD1c);
+WD33 = fs*(WD_cU*WD_VD2c) + 1j*wc*Delta_b*(WD_cU*WD_VD1c);
 
 %% IV - Computation of the matrix
 
