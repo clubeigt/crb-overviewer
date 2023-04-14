@@ -342,7 +342,7 @@ classdef main < matlab.apps.AppBase
             B = B(1:4,1:4);
             
             % 3b- matrix A: contribution of the bias
-            A = 2*fs*real(generate_MCRB_term([epsilon;epsilon_pt], considered_signal, fs, fc));
+            A = 2*fs*real(generate_A(considered_signal, fs, fc, [epsilon;epsilon_pt]));
             A = A-B;
             
             % 4- compute MCRB
