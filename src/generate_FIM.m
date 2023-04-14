@@ -32,10 +32,10 @@ function FIM = generate_FIM(code, fs, fc, epsilon)
 
 %% I - Initialisation
 
-wc = 2*pi*fc; % reduced pulsation
-
 NW = 3;
-NQ = [4,3];
+NQ = [4, 3];
+
+wc = 2*pi*fc; % reduced pulsation
 
 tau_0   = epsilon(1);
 b_0     = epsilon(2);
@@ -53,19 +53,7 @@ Delta_phi   = phi_1 - phi_0;      % [rad]
 
 %% II - Evaluation of Matrices W, W_Delta and Q
 
-% 1- W matrices
-W = generate_W_Delta(code, fs, fc, 0, 0);
-W_Delta = generate_W_Delta(code, fs, fc, Delta_tau, Delta_b);
-
-DD = zeros(2*NW);
-
-DD(1:NW,1:NW) = W;
-DD(NW+1:end,NW+1:end) = W;
-
-DD(1:NW,NW+1:end) = (W_Delta*exp(1j*(Delta_phi+wc*Delta_tau*b_1)))';
-DD(NW+1:end,1:NW) = W_Delta*exp(1j*(Delta_phi+wc*Delta_tau*b_1));
-
-% 2- Q matrices
+% 1- Q matrices
 Q_0 = [1j*alpha_0*wc*b_0,              0, -alpha_0;
                        0, -1j*alpha_0*wc,        0;
                        1,              0,        0;
@@ -80,6 +68,19 @@ Q = zeros(2*NQ);
 
 Q(1:NQ(1),1:NQ(2)) = Q_0;
 Q(NQ(1)+1:end,NQ(2)+1:end) = Q_1;
+
+% 2- W matrices
+W = generate_W_Delta(code, fs, fc, 0, 0);
+W_Delta = generate_W_Delta(code, fs, fc, Delta_tau, Delta_b);
+W_Delta = W_Delta*exp(1j*(Delta_phi+wc*Delta_tau*b_1));
+
+DD = zeros(2*NW);
+
+DD(1:NW,1:NW) = W;
+DD(NW+1:end,NW+1:end) = W;
+
+DD(1:NW,NW+1:end) = W_Delta';
+DD(NW+1:end,1:NW) = W_Delta;
 
 %% III- Computation of the FIM
 

@@ -37,6 +37,7 @@ function W_Delta = generate_W_Delta(code, fs, fc, Delta_tau, Delta_b)
 %% I - Initialisation
 
 N = length(code); % code length
+
 wc = 2*pi*fc;     % reduced pulsation  
 ts = 1/fs;        % reduced sampling period
 
