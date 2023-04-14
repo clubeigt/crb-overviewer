@@ -36,16 +36,17 @@ function W_Delta = generate_W_Delta(code, fs, fc, Delta_tau, Delta_b)
 
 %% I - Initialisation
 
-N = length(code);
-wc = 2*pi*fc;
-Ts = 1/fs;
+N = length(code); % code length
+wc = 2*pi*fc;     % reduced pulsation  
+ts = 1/fs;        % reduced sampling period
 
-%% II - Priori calculations
+%% II - Prior calculations
 
 % 1- Vectors involved in the W_Delta components
 
 % time vector
-dt = -(1-N:N-1) + Delta_tau/Ts;
+dt = -(1-N:N-1) + Delta_tau/ts;
+Nt = length(dt);
 
 % 0 derivative
 v0 = sinc(dt);
@@ -67,7 +68,7 @@ diagD = 1:N;
 
 % Matrix U (due to different Doppler between signals)
 if (Delta_b ~= 0)
-    diagU = exp(-1j*2*pi*Ts*fc*Delta_b*(1:N));
+    diagU = exp(-1j*2*pi*ts*fc*Delta_b*(1:N));
 else
     diagU = ones(1,N);
 end
@@ -85,22 +86,22 @@ else
     WD_cDU   = WD_cD;    
 end
 
-WD_VD0c = fftshift(ifft(fft(code,length(v0)).*(fft(v0)')));
-WD_VD0c = WD_VD0c(1:length(code));
+WD_VD0c = fftshift(ifft(fft(code,Nt).*(fft(v0)')));
+WD_VD0c = WD_VD0c(1:N);
 
-WD_VD0Dc = fftshift(ifft(fft(WD_Dc,length(v0)).*(fft(v0)')));
-WD_VD0Dc = WD_VD0Dc(1:length(WD_Dc));
+WD_VD0Dc = fftshift(ifft(fft(WD_Dc,Nt).*(fft(v0)')));
+WD_VD0Dc = WD_VD0Dc(1:N);
 
-WD_VD1c = fftshift(ifft(fft(code,length(v1)).*(fft(v1)')));
-WD_VD1c = WD_VD1c(1:length(code));
+WD_VD1c = fftshift(ifft(fft(code,Nt).*(fft(v1)')));
+WD_VD1c = WD_VD1c(1:N);
 
-WD_VD1Dc = fftshift(ifft(fft(WD_Dc,length(v1)).*(fft(v1)')));
-WD_VD1Dc = WD_VD1Dc(1:length(WD_Dc));
+WD_VD1Dc = fftshift(ifft(fft(WD_Dc,Nt).*(fft(v1)')));
+WD_VD1Dc = WD_VD1Dc(1:N);
 
-WD_VD2c = fftshift(ifft(fft(code,length(v2)).*(fft(v2)')));
-WD_VD2c = WD_VD2c(1:length(code));
+WD_VD2c = fftshift(ifft(fft(code,Nt).*(fft(v2)')));
+WD_VD2c = WD_VD2c(1:N);
 
-%% III - Evaluation of each components of W_Delta
+%% III - Evaluation o each components of W_Delta
 
 WD11 = (1/fs)*(WD_cU*WD_VD0c);
 WD12 = (1/fs^2)*(WD_cDU*WD_VD0c);

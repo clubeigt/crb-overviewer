@@ -34,6 +34,9 @@ function FIM = generate_FIM(code, fs, fc, epsilon)
 
 wc = 2*pi*fc; % reduced pulsation
 
+NW = 3;
+NQ = [4,3];
+
 tau_0   = epsilon(1);
 b_0     = epsilon(2);
 alpha_0 = epsilon(3);
@@ -54,13 +57,13 @@ Delta_phi   = phi_1 - phi_0;      % [rad]
 W = generate_W_Delta(code, fs, fc, 0, 0);
 W_Delta = generate_W_Delta(code, fs, fc, Delta_tau, Delta_b);
 
-DD = zeros(2*size(W));
+DD = zeros(2*NW);
 
-DD(1:length(W(:,1)),1:length(W(1,:))) = W;
-DD(length(W(:,1))+1:end,length(W(1,:))+1:end) = W;
+DD(1:NW,1:NW) = W;
+DD(NW+1:end,NW+1:end) = W;
 
-DD(1:length(W_Delta(:,1)),length(W_Delta(1,:))+1:end) = (W_Delta*exp(1j*(Delta_phi+wc*Delta_tau*b_1)))';
-DD(length(W_Delta(:,1))+1:end,1:length(W_Delta(1,:))) = W_Delta*exp(1j*(Delta_phi+wc*Delta_tau*b_1));
+DD(1:NW,NW+1:end) = (W_Delta*exp(1j*(Delta_phi+wc*Delta_tau*b_1)))';
+DD(NW+1:end,1:NW) = W_Delta*exp(1j*(Delta_phi+wc*Delta_tau*b_1));
 
 % 2- Q matrices
 Q_0 = [1j*alpha_0*wc*b_0,              0, -alpha_0;
@@ -73,10 +76,10 @@ Q_1 = [1j*alpha_1*wc*b_1,              0, -alpha_1;
                        1,              0,        0;
               1j*alpha_1,              0,        0];
 
-Q = zeros(2*size(Q_0));
+Q = zeros(2*NQ);
 
-Q(1:length(Q_0(:,1)),1:length(Q_0(1,:))) = Q_0;
-Q(length(Q_0(:,1))+1:end,length(Q_0(1,:))+1:end) = Q_1;
+Q(1:NQ(1),1:NQ(2)) = Q_0;
+Q(NQ(1)+1:end,NQ(2)+1:end) = Q_1;
 
 %% III- Computation of the FIM
 

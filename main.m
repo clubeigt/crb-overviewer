@@ -1,4 +1,4 @@
-classdef main_exported < matlab.apps.AppBase
+classdef main < matlab.apps.AppBase
 
     % Properties that correspond to app components
     properties (Access = public)
@@ -1152,7 +1152,7 @@ classdef main_exported < matlab.apps.AppBase
     methods (Access = public)
 
         % Construct app
-        function app = main_exported
+        function app = main
 
             % Create UIFigure and components
             createComponents(app)
