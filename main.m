@@ -324,14 +324,14 @@ classdef main < matlab.apps.AppBase
             + rho_1*exp(1j*phi_1)*circshift(considered_signal,tau_1).*exp(-1j*2*pi*fd_1*(time_axis' - (tau_1-tau_0)/(fs*F0)));
 
             % 2a- Doppler frequency estimation and compensation
-            [~, fd_pt, ~] = Single_Source_MLE_tau_b(c_multipath, considered_signal, doppler_table, Fd_axis, 1);
+            [~, fd_pt, ~] = single_source_MLE(c_multipath, considered_signal, doppler_table, Fd_axis, 1);
             
             c_multipath_noDoppler = c_multipath.*exp(1j*2*pi*fd_pt.*time_axis');
             
             dataSamp_multipath = adapt_signal(c_multipath_noDoppler,OSF);
             
             % 2b- time delay and complex amplitude estimation
-            [tau_pt, ~, rho_pt, phi_pt] = Single_Source_MLE_tau_b(dataSamp_multipath, dataSamp, ones(size(dataSamp)), 0, 1);
+            [tau_pt, ~, rho_pt, phi_pt] = single_source_MLE(dataSamp_multipath, dataSamp, ones(size(dataSamp)), 0, 1);
             tau_pt = tau_pt/OSF;
             
             % 3- compute information matrices
@@ -481,7 +481,7 @@ classdef main < matlab.apps.AppBase
             % Create UIFigure and hide until all components are created
             app.UIFigure = uifigure('Visible', 'off');
             app.UIFigure.Position = [100 100 1150 777];
-            app.UIFigure.Name = 'MATLAB App';
+            app.UIFigure.Name = 'CRB Overviewer';
             app.UIFigure.CloseRequestFcn = createCallbackFcn(app, @UIFigureCloseRequest, true);
 
             % Create SingleSourceCramrRaoBound1SCRBPanel

@@ -1,33 +1,28 @@
-function [i_tau_est, Fd_est, alpha_est, phi_est,sigma2_est] = Single_Source_MLE_tau_b(data, signal_clean, data_doppler, Fd_axis, OSF)
+function [i_tau_est, Fd_est, rho_est, phi_est,sigma2_est] = single_source_MLE(data, signal_clean, data_doppler, Fd_axis, OSF)
 %--------------------------------------------------------------------------
-%         USAGE: Single_Srouce_MLE_tau_b()
-%
 %        AUTHOR: Corentin Lubeigt 
 %                Lorenzo Ortega
 %       CREATED: 05/18/2020
 %   
 %   DESCRIPTION: 
 %
-%        INPUTS: FT_data      [] Fourier transform of the noisy composed 
-%                                signal whose parameters we try to estimate
-%                attenuation  [] attenuation of the signal (SNR)
-%                signal_clean [] clean version of the main signal (no delay,
-%                                no phase, no doppler) oversampled
+%        INPUTS: data      []      Fourier transform of the noisy composed 
+%                                  signal whose parameters we try to estimate
+%                signal_clean []   clean version of the main signal (no delay,
+%                                  no phase, no doppler) oversampled
 %                data_doppler []
 %                Fd_axis      [Hz]
-%                N_fft        [] size of the FFT
-%                i_tau_origin []
 %                OSF          []
-%                n_PRN        []
-% 
-% 
-%       OUTPUTS: i_tau_main  [] estimation of the index of the time delay 
-%                               of the main signal
-%                Fd_main     [Hz] estimation of the doppler drift of the main
-%                               signal
-%                alpha_main  [] estimation of the amplitude of the main
-%                               signal
-%                phi_main    [] estimation of the phase of the main signal
+%                
+%       OUTPUTS: i_tau_est  []    estimation of the index of the time delay 
+%                                 of the main signal
+%                Fd_est     [Hz]  estimation of the doppler drift of the main
+%                                 signal
+%                rho_est    []    estimation of the amplitude of the main
+%                                 signal
+%                phi_est    [rad] estimation of the phase of the main signal
+%                sigma2_est []    estimation of the phase of the main signal
+%     
 %
 %    REFERENCES: 
 %--------------------------------------------------------------------------
@@ -68,12 +63,12 @@ if (OSF ~=1)
     [~, i_tau_est] = max(abs(corrFuncSamp));  
 
     % a2) amplitude (alpha)
-    alpha_est = norm(corrFuncSamp(i_tau_est));
+    rho_est = norm(corrFuncSamp(i_tau_est));
     % a3) phase (phi)
     phi_est = angle(corrFuncSamp(i_tau_est));
 else
     % a2) amplitude (alpha)
-    alpha_est = norm(corrFunc_data_current(i_tau_est,i_Fd_est));
+    rho_est = norm(corrFunc_data_current(i_tau_est,i_Fd_est));
     % a3) phase (phi)
     phi_est = angle(corrFunc_data_current(i_tau_est,i_Fd_est));
 end
@@ -88,4 +83,4 @@ i_tau_est = i_tau_est - i_tau_range*OSF - 1;
 % sigma2_est = var(data - alpha_est*exp(1j*phi_est)*circshift(dataSamp.*(data_doppler(:,i_Fd_est)),i_tau_est));
 sigma2_est = var(data);
 
-end % end of MLE_Monosource_estimator_tau_b function
+end % end of single_source_MLE function
