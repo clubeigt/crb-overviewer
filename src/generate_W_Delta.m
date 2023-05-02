@@ -31,7 +31,7 @@ function W_Delta = generate_W_Delta(code, fs, fc, Delta_tau, Delta_b)
 %                    DOI: 10.1049/iet-rsn.2020.0168
 %                [2] 2020 [Lubeigt et al] Joint Delay-Doppler Estimation 
 %                    Performance in a Dual Source Context
-%                    DOI:10.3390/rs12233894
+%                    DOI: 10.3390/rs12233894
 %--------------------------------------------------------------------------
 
 %% I - Initialisation
@@ -121,6 +121,6 @@ W_Delta = [WD11, WD12, WD13;
            WD31, WD32, WD33];
 
 % Note: here one still needs to multiply W_Delta with the complex
-% exponential that contains the phase difference.
+% exponential that contains the phase difference (see [2]).
 
 end % function generate_W_Delta

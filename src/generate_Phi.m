@@ -24,7 +24,7 @@ function PHI = generate_Phi(code, fs, fc, epsilon)
 %
 %    REFERENCES: [1] 2020 [Lubeigt et al] Joint Delay-Doppler Estimation 
 %                    Performance in a Dual Source Context
-%                    DOI:10.3390/rs12233894
+%                    DOI: 10.3390/rs12233894
 %                [2] 2022 [Lubeigt et al] Clean-to-Composite Bound Ratio: 
 %                    A New Multipath Criterion for GNSS Signal Design and 
 %                    Analysis

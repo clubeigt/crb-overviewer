@@ -27,7 +27,7 @@ function FIM = generate_FIM(code, fs, fc, epsilon)
 %                    DOI: 10.1109/ICASSP.2019.8682948
 %                [2] 2020 [Lubeigt et al] Joint Delay-Doppler Estimation 
 %                    Performance in a Dual Source Context
-%                    DOI:10.3390/rs12233894
+%                    DOI: 10.3390/rs12233894
 %--------------------------------------------------------------------------
 
 %% I - Initialisation
