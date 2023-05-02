@@ -1,3 +1,27 @@
+% -------------------------------------------------------------------------
+%        AUTHOR: Corentin Lubeigt
+%       CREATED: 04/12/2023
+%   
+%   DESCRIPTION: This scripts generates a graphical user interface that
+%   allows to compute different estimation theory tools (mostly Cramér-Rao
+%   bounds) for the estimation of the time-delay, Doppler freqency and
+%   complex amplitudes of one or two signals in an additive White Gaussian
+%   noise.
+%    REFERENCES: [1] 2020 [Medina et al] Compact CRB for delay, Doppler, 
+%                    and phase estimation - application to GNSS SPP and RTK
+%                    performance characterisation
+%                    DOI: 10.1049/iet-rsn.2020.0168
+%                [2] 2020 [Lubeigt et al] Joint Delay-Doppler Estimation 
+%                    Performance in a Dual Source Context
+%                    DOI: 10.3390/rs12233894
+%                [3] 2023 [Lubeigt et al] Untangling first and second order
+%                    statistics contributions in multipath scenarios
+%                    DOI: 10.1016/j.sigpro.2022.108868
+%                [4] 2022 [Lubeigt et al] Clean-to-Composite Bound Ratio: 
+%                    A New Multipath Criterion for GNSS Signal Design and 
+%                    Analysis
+%                    DOI: 10.1109/TAES.2022.3172023
+% -------------------------------------------------------------------------
 classdef main < matlab.apps.AppBase
 
     % Properties that correspond to app components
@@ -184,6 +208,12 @@ classdef main < matlab.apps.AppBase
 
         % Button pushed function: ProcessButton
         function ProcessButtonPushed(app, event)
+% -------------------------------------------------------------------------
+%   DESCRIPTION: This function compute the single source CRB for the
+%   estimation of the time-delay, Doppler frequency and complex amplitude
+%   of a single signal embedded in an additive white Gaussian noise. It
+%   implements the expressions derived in [1].
+% -------------------------------------------------------------------------
             global considered_signal 
             global fs fc Fc
             global lampColor
@@ -207,8 +237,8 @@ classdef main < matlab.apps.AppBase
             FIM = 2*fs*real(generate_FIM(considered_signal, fs, fc, epsilon));
 
             % 3- FIM inversion leads directly to the Cramer-Rao Bound
-            CRB = real(inv(FIM(1:4,1:4)))/attenuationSquared; % the first four terms are required for 1S scenario
-            
+            % the first four terms are used for the single source scenario
+            CRB = real(inv(FIM(1:4,1:4)))/attenuationSquared; 
             CRB_tau_0   = sqrt(CRB(1,1));
             CRB_fd_0    = sqrt(CRB(2,2))*Fc;
             CRB_rho_0   = sqrt(CRB(3,3));
@@ -228,6 +258,12 @@ classdef main < matlab.apps.AppBase
 
         % Button pushed function: ProcessButton_3
         function ProcessButton_3Pushed(app, event)
+% -------------------------------------------------------------------------
+%   DESCRIPTION: This function compute the dual source CRB for the
+%   estimation of the time-delay, Doppler frequency and complex amplitude
+%   of a signal and a single reflection, embedded in an additive white 
+%   Gaussian noise. It implements the expressions derived in [2].
+% -------------------------------------------------------------------------
             global considered_signal 
             global fs fc Fc
             global lampColor
@@ -287,6 +323,12 @@ classdef main < matlab.apps.AppBase
 
         % Button pushed function: ProcessButton_2
         function ProcessButton_2Pushed(app, event)
+% -------------------------------------------------------------------------
+%   DESCRIPTION: This function compute the misspecified CRB for the
+%   estimation of the time-delay, Doppler frequency and complex amplitude
+%   of a signal in presence of a single multipath, embedded in an additive 
+%   white Gaussian noise. It implements the expressions derived in [3].
+% -------------------------------------------------------------------------
             global considered_signal 
             global fs fc Fc F0 Tcode
             global lampColor
@@ -372,6 +414,13 @@ classdef main < matlab.apps.AppBase
 
         % Button pushed function: ProcessButton_4
         function ProcessButton_4Pushed(app, event)
+% -------------------------------------------------------------------------
+%   DESCRIPTION: This function compute the Clean-to-Composite Bound Ratio
+%   for the estimation of the time-delay, Doppler frequency and complex 
+%   amplitude of a signal in presence of a single multipath, embedded in an
+%   additive white Gaussian noise. It implements the expressions derived in
+%   [4].
+% -------------------------------------------------------------------------
             global considered_signal 
             global fs fc Fc
             global lampColor
