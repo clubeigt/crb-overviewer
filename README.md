@@ -12,7 +12,12 @@ CRB Overviewer is a Matlab toolbox presenting deterministic estimation theory to
 - load a signal hitting **Load** button
 - hit **Process** button of the desired box to get the corresponding metric
 
+## Acknowledgements
+
+Many thanks to Lorenzo Ortega, Jordi Vilà-Valls and Eric Chaumette for their thoughts and precious remarks on this work.
+
 ## References
+
 [1] D. Medina, L. Ortega, J. Vilà-Valls, P. Closas, F. Vincent, E. Chaumette, "Compact CRB for delay, Doppler, phase estimation -- application to GNSS SPP and performance characterisation," in: _IET_, vol. 14, no. 10, pp. 1537--1549, **2020**. DOI: 10.1049/iet-rsn.2020.0168
 
 [2] C. Lubeigt, L. Ortega, J. Vilà-Valls, L. Lestarquit, E. Chaumette, "Joint Delay-Doppler Performance in a Dual Source Context," in _Remote Sensing_, vol. 12, no. 23, p. 3894, **2020**. DOI: 10.3390/rs12233894
